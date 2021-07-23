@@ -1,0 +1,54 @@
+- name: This sets up an httpd webserver
+  hosts: 127.0.0.1
+  tasks:
+  - name: Install apache packages 
+    package:
+      name: httpd
+      state: present
+  - name: installing python package
+    package:
+      name: python3
+      state: present
+  - name: copying necessary files for webapp
+    copy:
+      src: webapp/index.html
+      dest: /var/www/html/index.html
+  - file:
+      state: directory
+      path: /var/www/cgi-bin
+  - file:
+      state: directory
+      path: /var/www/html/css
+  - copy:
+      src: webapp/style.css
+      dest: /var/www/html/css/style.css
+  - copy:
+      src: webapp/index.py
+      dest: /var/www/cgi-bin/index.py
+      group: apache
+      mode: u=rwxr,g=xr,o=x 
+  - name: ensure httpd is running
+    service:
+      name: httpd 
+      state: started
+  - name: Open port 80 for http access
+    firewalld:
+      service: http
+      permanent: true
+      state: enabled
+  - name: Restart the firewalld service to load in the firewall changes
+    service: 
+      name: firewalld 
+      state: restarted
+- hosts: localhost
+ 
+  become: yes
+ 
+  vars_files:
+ 
+    - vars/main.yml
+ 
+  roles:
+ 
+    - { role: geerlingguy.mysql }
+
