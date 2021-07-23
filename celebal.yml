@@ -11,7 +11,7 @@
       state: present
   - name: copying necessary files for webapp
     copy:
-      src: webapp/index.html
+      src: index.html
       dest: /var/www/html/index.html
   - file:
       state: directory
@@ -20,10 +20,10 @@
       state: directory
       path: /var/www/html/css
   - copy:
-      src: webapp/style.css
+      src: style.css
       dest: /var/www/html/css/style.css
   - copy:
-      src: webapp/index.py
+      src: index.py
       dest: /var/www/cgi-bin/index.py
       group: apache
       mode: u=rwxr,g=xr,o=x 
